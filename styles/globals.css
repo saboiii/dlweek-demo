@@ -2,20 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat.ttf");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@font-face {
+  font-family: "Jet Brains Mono";
+  src: url("/fonts/JetBrainsMono-VariableFont_wght.ttf");
+}
+
+
+@layer base{
+  body {
+    @apply bg-black text-white
+  }
+
+  h1 {
+    @apply text-center flex text-[36px] lg:text-[54px] tracking-[-2px] font-montserrat font-bold
+  }
+
+  input {
+    @apply text-white text-xs md:text-sm font-montserrat font-medium border-gray-600 focus:outline-none focus:border-white bg-transparent p-2 transition duration-500 ease-in-out rounded-lg placeholder:text-gray-600 border
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.subtitle{
+  @apply flex text-center uppercase leading-6 text-[10px] lg:text-xs font-montserrat font-semibold tracking-[8px] lg:tracking-[12px]
+}
+
+.form-style{
+  @apply flex flex-col gap-4 items-center w-full md:w-1/3 bg-gradient-to-l from-slate-500/10 to-gray-400/10 backdrop-blur-xl md:px-10 md:py-12 rounded-2xl p-8 mx-4 md:mx-0
+}
+
+.button-style1{
+  @apply flex text-center justify-center bg-[#171717] py-3 rounded-lg text-[#c0bebe] font-normal uppercase text-xs md:text-sm tracking-[2px] transition duration-200 ease-in-out hover:bg-[#161616] disabled:cursor-not-allowed disabled:text-[#404040] 
+}
+
+.button-style2{
+  @apply flex px-8 text-center justify-center bg-[#171717] py-3 rounded-lg text-[#c0bebe] font-normal uppercase text-sm tracking-[2px] transition duration-200 ease-in-out hover:bg-[#272727]
+}
+
+.cryptic-text{
+  @apply font-normal tracking-widest text-[12px] text-gray-600
+}
+
+.cryptic-text2{
+  @apply font-normal tracking-widest text-[12px] text-gray-300
+}
+
+.cryptic-text3{
+  @apply font-normal tracking-widest text-[8px] text-gray-600
+}
+
+.temp {
+  @apply flex items-center justify-center flex-col h-screen w-screen gap-8 transform sm:rotate-0 rotate-90
+}
+
+.grecaptcha-badge {
+  display: none !important;
 }

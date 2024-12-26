@@ -7,9 +7,13 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+      },
+      fontFamily: {
+        'montserrat': ['Montserrat, sans-serif'],
+        'jetbrains': ['Jet Brains Mono, sans-serif'],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
       },
     },
   },

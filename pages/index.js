@@ -1,114 +1,143 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import Background from "@/components/Background";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { parseCookies, setCookie } from "nookies";
+import axios from "axios";
+import Link from "next/link";
+import { CiLogout } from "react-icons/ci";
+import { GoArrowRight } from "react-icons/go";
+import Head from "next/head";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export async function getServerSideProps(context) {
+  const cookies = parseCookies(context);
+  const token = cookies.token;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  let leaderboard = [];
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  try {
+    const response = await axios.get(`${apiUrl}/api/leaderboard`);
+    leaderboard = response.data;
+  } catch (error) {
+    console.error("error fetching leaderboard:", error);
+  }
 
-export default function Home() {
+  return {
+    props: {
+      token: token || null,
+      leaderboard,
+    },
+  };
+}
+
+export default function Home({ token, leaderboard }) {
+  const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+  const [clicks, setClicks] = useState([]);
+
+  useEffect(() => {
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, [token]);
+
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout");
+      router.push("/");
+      setIsLoggedIn(false)
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const handlePlusClick = async (index) => {
+    const newClicks = [...clicks, index];
+    setClicks(newClicks);
+
+    if (newClicks.length > 4) {
+      setClicks([]);
+      return;
+    }
+
+    if (newClicks.length === 4) {
+      try {
+        const response = await axios.post("/api/puzzle", { clicks: newClicks });
+        if (response.data.isValid) {
+          console.log("Correct sequence, unlocking register/login page.");
+          setCookie(null, "unlockRegister", "true", {
+            path: "/",
+            maxAge: 60 * 60 * 24,
+            httpOnly: false,
+          });
+          router.push("/register");
+        } else {
+          setClicks([]);
+        }
+      } catch (error) {
+        setClicks([]);
+      }
+    }
+  };
+
+
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <>
+      <Head>
+        <meta
+          charSet='utf-8'
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <title>DLW | Coming Soon</title>
+      </Head>
+      <div className="flex flex-col p-8 w-screen h-screen">
+        <div className="flex justify-between text-lg">
+          <button onClick={() => handlePlusClick(0)} disabled={isLoggedIn} className=" cursor-default">+</button>
+          <button onClick={() => handlePlusClick(1)} disabled={isLoggedIn} className=" cursor-default">+</button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        {isLoggedIn ? (
+          <div className="flex justify-center w-full h-full items-center flex-col">
+            <Background videoUrl={videoUrl} />
+            <div className="flex md:hidden cryptic-text2">
+              Leaderboard only available on web.
+            </div>
+            <div className="hidden md:flex flex-col w-full h-full py-20 px-32">
+              <h1>LEADERBOARD</h1>
+              <div className="grid grid-cols-1 overflow-scroll gap-2 grid-rows-10 w-full h-full border rounded-md px-4 mb-4">
+                {leaderboard.map((user) => (
+                  <div key={user._id} className="flex justify-between border-b items-center px-4">
+                    <div>{user.username}</div>
+                    <div>{user.highScore}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between gap-2">
+                <button onClick={handleLogout} className="cryptic-text2 no-underline mr-4"><CiLogout className="inline mr-1" /> Logout</button>
+                <Link href="/game" className="cryptic-text2 no-underline">Back to Game<GoArrowRight className="inline ml-1" /></Link>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center h-full items-center flex-col">
+            <Background videoUrl={videoUrl} />
+            <div className="subtitle mb-2">
+              DEEP LEARNING WEEK
+            </div>
+            <h1 className="mb-2">
+              COMING SOON.
+            </h1>
+            <div className="subtitle">
+              Hosted by MLDA
+            </div>
+          </div>
+        )}
+        <div className="flex justify-between">
+          <button onClick={() => handlePlusClick(2)} disabled={isLoggedIn} className=" cursor-default">+</button>
+          <button onClick={() => handlePlusClick(3)} disabled={isLoggedIn} className=" cursor-default">+</button>
+        </div>
+      </div>
+    </>
+
+
   );
 }
