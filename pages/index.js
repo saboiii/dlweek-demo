@@ -118,8 +118,9 @@ export default function Home({ token, leaderboard: initialLeaderboard }) {
         {isLoggedIn ? (
           <div className="flex justify-center w-full h-full items-center flex-col">
             <Background videoUrl={videoUrl} />
-            <div className="flex md:hidden cryptic-text2">
+            <div className="flex md:hidden flex-col cryptic-text2 px-24 text-center">
               Leaderboard only available on a bigger viewport.
+              <button onClick={handleLogout} className="cryptic-text2 no-underline mt-12"><CiLogout className="inline mr-1" /> Logout</button>
             </div>
             <div className="hidden md:flex flex-col w-full h-full py-20 px-32">
               <h1>LEADERBOARD</h1>

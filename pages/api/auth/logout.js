@@ -5,7 +5,6 @@ export default function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // Clear the token by setting it with a maxAge of 0
   setCookie({ res }, "token", "", {
     httpOnly: true,
     secure: true,

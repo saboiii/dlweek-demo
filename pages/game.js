@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState, useRef } from 'react';
 import Head from "next/head";
+import { CiLogout } from "react-icons/ci";
 
 const GameComponent = dynamic(() =>
   import('@/game/GameComponent'), {
@@ -139,6 +140,7 @@ export default function Game({ initialUser }) {
           <div>
             This page is best viewed on a larger screen. Try using a laptop or a tablet!
           </div>
+          <button onClick={handleLogout} className="cryptic-text2 no-underline mt-12"><CiLogout className="inline mr-1" /> Logout</button>
         </div>
 
 
