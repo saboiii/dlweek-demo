@@ -11,11 +11,10 @@ import Head from "next/head";
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
   const token = cookies.token;
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   let leaderboard = [];
 
   try {
-    const response = await axios.get(`${apiUrl}/api/leaderboard`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`);
     leaderboard = response.data;
   } catch (error) {
     console.error("error fetching leaderboard:", error);

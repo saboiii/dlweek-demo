@@ -11,6 +11,7 @@ export default async function handler(req, res) {
         .sort({ highScore: -1 })
         .limit(10);
 
+      console.log(leaderboard)
       res.status(200).json(leaderboard);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
