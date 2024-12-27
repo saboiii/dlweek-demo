@@ -82,20 +82,24 @@ export default function Home({ token, leaderboard: initialLeaderboard }) {
   };
 
   useEffect(() => {
+    
     const fetchLeaderboard = async () => {
+      console.log("fetching leaderboard");
       try {
         const response = await axios.get("/api/leaderboard");
+        console.log(response.data)
         setLeaderboard(response.data);
       } catch (error) {
         console.error("Error fetching leaderboard:", error);
       }
     };
-
+  
     fetchLeaderboard();
     const interval = setInterval(fetchLeaderboard, 5000);
-
+  
     return () => clearInterval(interval);
   }, []);
+  
 
 
 
