@@ -29,10 +29,11 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default function Home({ token, leaderboard }) {
+export default function Home({ token, leaderboard: initialLeaderboard }) {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const [leaderboard, setLeaderboard] = useState(initialLeaderboard);
   const [clicks, setClicks] = useState([]);
 
   useEffect(() => {
@@ -80,6 +81,19 @@ export default function Home({ token, leaderboard }) {
       }
     }
   };
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`);
+        setLeaderboard(response.data);
+      } catch (error) {
+        console.error("Error fetching leaderboard on client-side:", error);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
 
 
   return (
