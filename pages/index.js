@@ -85,11 +85,18 @@ export default function Home({ token, leaderboard }) {
   return (
     <>
       <Head>
-        <meta
-          charSet='utf-8'
-        />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>DLW | Coming Soon</title>
+        <meta name="description" content="Deep Learning Week - MLDA @ NTU EEE" />
+
+        <meta property="og:title" content="DLW | Coming Soon" />
+        <meta property="og:description" content="Deep Learning Week - MLDA @ NTU EEE" />
+        <meta property="og:image" content="/public/og-image.png" />
+        <meta property="og:url" content="https://deeplearningweek.netlify.app" />
+        <meta property="og:type" content="website" />
       </Head>
+
       <div className="flex flex-col p-8 w-screen h-screen">
         <div className="flex justify-between text-lg">
           <button onClick={() => handlePlusClick(0)} disabled={isLoggedIn} className=" cursor-default">+</button>

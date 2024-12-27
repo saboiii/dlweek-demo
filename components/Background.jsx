@@ -1,52 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { Suspense } from "react";
+
+const VideoComponent = React.lazy(() => Promise.resolve({
+  default: ({ videoUrl, onLoad }) => (
+    <video
+      id="background-video"
+      className="fixed inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100 z-[-2]"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      onCanPlayThrough={onLoad}
+    >
+      <source src={videoUrl} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  )
+}));
 
 const Background = ({ videoUrl }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    const videoElement = document.getElementById("background-video");
-
-    const handleCanPlayThrough = () => {
-      setIsLoaded(true);
-    };
-
-    if (videoElement) {
-      videoElement.addEventListener("canplaythrough", handleCanPlayThrough);
-    } else{
-      console.log("naur")
-    }
-
-    return () => {
-      if (videoElement) {
-        videoElement.removeEventListener("canplaythrough", handleCanPlayThrough);
-      } else{
-        console.log("naur")
-      }
-    };
-  }, []);
+  const fallback = (
+    <div className="fixed inset-0 bg-black z-[-1] flex items-center justify-center">
+      <span className="text-white text-xl">Loading...</span>
+    </div>
+  );
 
   return (
-    <>
-      {!isLoaded && (
-        <div className="fixed inset-0 bg-black z-[-1]" />
-      )}
-      <video
-        id="background-video"
-        className={`fixed inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-          isLoaded ? "opacity-100 z-[-2]" : "opacity-0 z-[-3]"
-        }`}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      >
-        <source src={videoUrl} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      
+    <Suspense fallback={fallback}>
+      <VideoComponent videoUrl={videoUrl} onLoad={() => console.log("Video loaded")} />
       <div className="fixed inset-0 bg-black bg-opacity-50 z-[-1] pointer-events-none" />
-    </>
+    </Suspense>
   );
 };
 
