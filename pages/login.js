@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { parseCookies } from 'nookies';
 import Head from "next/head";
+import CaptchaPolicy from "@/components/CaptchaPolicy";
 
 export async function getServerSideProps(context) {
   const { req } = context;
@@ -119,7 +120,7 @@ export default function Login() {
             loadingText={loadingText}
           />
         </form>
-        <div className="cryptic-text3 mb-16 mx-12 text-center">This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.</div>
+        <CaptchaPolicy/>
       </div>
     </>
   );

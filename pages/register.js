@@ -6,6 +6,7 @@ import { parseCookies } from "nookies";
 import Link from "next/link";
 import { GoArrowRight } from "react-icons/go";
 import Head from "next/head";
+import CaptchaPolicy from "@/components/CaptchaPolicy";
 
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
@@ -101,7 +102,7 @@ export default function Register() {
           />
           <Link href="/login" className="cryptic-text no-underline z-10 mt-4">Login<GoArrowRight className="inline ml-1" /></Link>
         </form>
-        <div className="cryptic-text3 mb-16 mx-12 text-center">This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.</div>
+        <CaptchaPolicy/>
       </div>
     </>
   );
