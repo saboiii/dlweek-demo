@@ -86,7 +86,13 @@ export default function Home({ token, leaderboard: initialLeaderboard }) {
     const fetchLeaderboard = async () => {
       console.log("fetching leaderboard");
       try {
-        const response = await axios.get("/api/leaderboard");
+        const response = await axios.get("/api/leaderboard", {
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
         console.log(response.data)
         setLeaderboard(response.data);
       } catch (error) {
