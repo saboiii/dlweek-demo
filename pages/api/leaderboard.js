@@ -8,8 +8,8 @@ export default async function handler(req, res) {
       res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
       res.setHeader("Pragma", "no-cache");
       res.setHeader("Expires", "0");
-      
-      const db = await connectToDatabase();
+
+      await connectToDatabase();
       const leaderboard = await User.find()
         .select("username highScore")
         .sort({ highScore: -1 })

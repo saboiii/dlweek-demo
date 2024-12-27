@@ -1,6 +1,5 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/models/User";
-import mongoose from "mongoose";
 
 export default async function handler(req, res) {
   const { id: userId } = req.query; 
@@ -11,7 +10,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: 'User ID is required' });
       }
 
-      const db = await connectToDatabase();
+      await connectToDatabase();
       const user = await User.findOne({ _id: userId });
 
       if (!user) {
