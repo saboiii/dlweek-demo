@@ -84,7 +84,6 @@ export default function Home({ token, initialLeaderboard  }) {
   useEffect(() => {
     
     const fetchLeaderboard = async () => {
-      console.log("fetching leaderboard");
       try {
         const response = await axios.get("/api/leaderboard", {
           headers: {
@@ -93,7 +92,6 @@ export default function Home({ token, initialLeaderboard  }) {
             Expires: "0",
           },
         });
-        console.log(response.data)
         setLeaderboard(response.data);
       } catch (error) {
         console.error("Error fetching leaderboard:", error);

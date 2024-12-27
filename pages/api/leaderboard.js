@@ -16,7 +16,6 @@ export default async function handler(req, res) {
         .limit(10)
         .lean()
 
-      console.log(leaderboard)
       res.status(200).json(leaderboard);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
