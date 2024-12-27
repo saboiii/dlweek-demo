@@ -84,15 +84,19 @@ export default function Home({ token, leaderboard: initialLeaderboard }) {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`);
+        const response = await axios.get("/api/leaderboard");
         setLeaderboard(response.data);
       } catch (error) {
-        console.error("Error fetching leaderboard on client-side:", error);
+        console.error("Error fetching leaderboard:", error);
       }
     };
 
     fetchLeaderboard();
+    const interval = setInterval(fetchLeaderboard, 5000);
+
+    return () => clearInterval(interval);
   }, []);
+
 
 
   return (

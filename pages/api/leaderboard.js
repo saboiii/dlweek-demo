@@ -10,19 +10,18 @@ export default async function handler(req, res) {
         .select("username highScore")
         .sort({ highScore: -1 })
         .limit(10);
-
-      console.log(leaderboard)
       res.status(200).json(leaderboard);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
       res.status(500).json({ message: "Error fetching leaderboard" });
     }
   }
-  
+
   if (req.method === "POST") {
     try {
       const { userId, highScore } = req.body;
 
+      // Validation
       if (!userId || highScore == null) {
         return res.status(400).json({ message: "Missing userId or highScore" });
       }
@@ -32,16 +31,24 @@ export default async function handler(req, res) {
 
       const db = await connectToDatabase();
 
+      // Update the user's high score
       await User.findOneAndUpdate(
         { _id: userId },
         { $max: { highScore: highScore } },
         { new: true, upsert: true }
       );
 
+      // Fetch the updated leaderboard
       const leaderboard = await User.find()
         .select("username highScore")
         .sort({ highScore: -1 })
         .limit(10);
+
+      if (res.socket?.server?.io) {
+        res.socket.server.io.emit("leaderboardUpdated", leaderboard);
+      } else {
+        console.error("Socket.IO not initialized.");
+      }
 
       res.status(200).json(leaderboard);
     } catch (error) {
