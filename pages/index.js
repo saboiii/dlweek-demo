@@ -99,7 +99,7 @@ export default function Home({ token, leaderboard }) {
           <div className="flex justify-center w-full h-full items-center flex-col">
             <Background videoUrl={videoUrl} />
             <div className="flex md:hidden cryptic-text2">
-              Leaderboard only available on web.
+              Leaderboard only available on a bigger viewport.
             </div>
             <div className="hidden md:flex flex-col w-full h-full py-20 px-32">
               <h1>LEADERBOARD</h1>
