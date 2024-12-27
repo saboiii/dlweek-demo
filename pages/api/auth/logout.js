@@ -8,7 +8,7 @@ export default function handler(req, res) {
   // Clear the token by setting it with a maxAge of 0
   setCookie({ res }, "token", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     maxAge: 0,
     sameSite: "strict",
     path: "/",

@@ -61,7 +61,7 @@ export default async function handler(req, res) {
 
     setCookie({ res }, "token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       maxAge: 7 * 24 * 60 * 60,
       sameSite: "strict",
       path: "/",
