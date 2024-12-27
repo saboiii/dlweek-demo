@@ -5,12 +5,17 @@ import mongoose from "mongoose";
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
+      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+      
       const db = await connectToDatabase();
       const leaderboard = await User.find()
         .select("username highScore")
         .sort({ highScore: -1 })
         .limit(10)
-        .lean();
+        .lean()
+        .readPreference("primary");
 
       res.status(200).json(leaderboard);
     } catch (error) {

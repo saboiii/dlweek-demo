@@ -11,11 +11,11 @@ import Head from "next/head";
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
   const token = cookies.token;
-  let leaderboard = [];
+  let initialLeaderboard  = [];
 
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`);
-    leaderboard = response.data;
+    initialLeaderboard  = response.data;
   } catch (error) {
     console.error("error fetching leaderboard:", error);
   }
@@ -23,12 +23,12 @@ export async function getServerSideProps(context) {
   return {
     props: {
       token: token || null,
-      leaderboard,
+      initialLeaderboard ,
     },
   };
 }
 
-export default function Home({ token, leaderboard: initialLeaderboard }) {
+export default function Home({ token, initialLeaderboard  }) {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
