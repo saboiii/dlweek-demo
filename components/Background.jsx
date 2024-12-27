@@ -27,7 +27,7 @@ const Background = ({ videoUrl }) => {
 
   return (
     <Suspense fallback={fallback}>
-      <VideoComponent videoUrl={videoUrl} onLoad={() => console.log("Video loaded")} />
+      <VideoComponent videoUrl={videoUrl} onLoad={() => console.log("Background video loaded!")} />
       <div className="fixed inset-0 bg-black bg-opacity-50 z-[-1] pointer-events-none" />
     </Suspense>
   );
