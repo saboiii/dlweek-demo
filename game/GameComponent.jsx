@@ -46,6 +46,7 @@ const GameComponent = ({ pause, user }) => {
 
     useEffect(() => {
         if (gameOver) {
+            console.log(score)
             saveHighScore();
         }
     }, [gameOver]);

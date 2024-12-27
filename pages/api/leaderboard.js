@@ -16,7 +16,9 @@ export default async function handler(req, res) {
       console.error("Error fetching leaderboard:", error);
       res.status(500).json({ message: "Error fetching leaderboard" });
     }
-  } else if (req.method === "POST") {
+  }
+  
+  if (req.method === "POST") {
     try {
       const { userId, highScore } = req.body;
 
