@@ -3,6 +3,7 @@ import axios from "../lib/axios";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState, useRef } from 'react';
+import Head from "next/head";
 
 const GameComponent = dynamic(() =>
   import('@/game/GameComponent'), {
@@ -102,37 +103,46 @@ export default function Game({ initialUser }) {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="flex w-screen h-screen items-center justify-center">
-      <div className="hidden md:flex w-full flex-row sm:flex-col transform items-center justify-center gap-8">
-        <div className="flex cryptic-text">
-          Welcome, <span className="cryptic-text2 inline-block">&nbsp;{user?.username}</span>. It won't be this easy in the future, you're just a lucky early user.
-        </div>
-        <GameComponent className="flex" pause={pause} user={user} />
-        {pause && (
-          <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-[#ffffff]/5 flex flex-col justify-center items-center backdrop-blur-sm transform -translate-x-1/2 -translate-y-1/2">
-            <h1 className="text-white uppercase">Paused</h1>
-            <button className="button-style2" onClick={handlePause}>
-              Continue
-            </button>
+    <>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Minigame | DLW</title>
+        <meta name="description" content="DLW Minigame - Unlocked" />
+      </Head>
+
+      <div className="flex w-screen h-screen items-center justify-center">
+        <div className="hidden md:flex w-full flex-row sm:flex-col transform items-center justify-center gap-8">
+          <div className="flex cryptic-text">
+            Welcome, <span className="cryptic-text2 inline-block">&nbsp;{user?.username}</span>. It won't be this easy in the future, you're just a lucky early user.
           </div>
-        )}
-        <div className="hidden md:flex">
-          <button onClick={handleLogout} className="cryptic-text underline mr-4">
-            Logout
-          </button>
-          <Link href="/" className="cryptic-text underline">
-            Leaderboard
-          </Link>
+          <GameComponent className="flex" pause={pause} user={user} />
+          {pause && (
+            <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-[#ffffff]/5 flex flex-col justify-center items-center backdrop-blur-sm transform -translate-x-1/2 -translate-y-1/2">
+              <h1 className="text-white uppercase">Paused</h1>
+              <button className="button-style2" onClick={handlePause}>
+                Continue
+              </button>
+            </div>
+          )}
+          <div className="hidden md:flex">
+            <button onClick={handleLogout} className="cryptic-text underline mr-4">
+              Logout
+            </button>
+            <Link href="/" className="cryptic-text underline">
+              Leaderboard
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="flex md:hidden cryptic-text flex-col items-center px-24 text-center">
-        <div>Hello, <span className="cryptic-text2 inline-block">{user?.username}</span>.</div>
-        <div>
-          This page is best viewed on a larger screen. Try using a laptop or a tablet!
+        <div className="flex md:hidden cryptic-text flex-col items-center px-24 text-center">
+          <div>Hello, <span className="cryptic-text2 inline-block">{user?.username}</span>.</div>
+          <div>
+            This page is best viewed on a larger screen. Try using a laptop or a tablet!
+          </div>
         </div>
-      </div>
 
 
-    </div>
+      </div>
+    </>
   );
 }

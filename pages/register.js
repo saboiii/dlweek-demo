@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
 import Link from "next/link";
 import { GoArrowRight } from "react-icons/go";
+import Head from "next/head";
 
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
@@ -56,7 +57,7 @@ export default function Register() {
       }
 
       const response = await axios.post("/api/auth/register", { username, password, captchaToken });
-      
+
       setLoadingText("Creating new account...");
 
       if (response.status === 200 || response.status === 201) {
@@ -82,18 +83,26 @@ export default function Register() {
   };
 
   return (
-    <div className='flex flex-col items-center h-screen w-screen'>
-      <form onSubmit={handleSubmit} className="flex h-full w-full items-center justify-center z-30 flex-col px-8 md:px-0">
-        <AuthForm
-          setUsername={setUsername}
-          setPassword={setPassword}
-          errorMessage={errorMessage}
-          loading={loading}
-          loadingText={loadingText}
-        />
-        <Link href="/login" className="cryptic-text no-underline z-10 mt-4">Login<GoArrowRight className="inline ml-1" /></Link>
-      </form>
-      <div className="cryptic-text3 mb-16 mx-12 text-center">This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.</div>
-    </div>
+    <>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Register | DLW</title>
+        <meta name="description" content="DLW Secret Register Page" />
+      </Head>
+      <div className='flex flex-col items-center h-screen w-screen'>
+        <form onSubmit={handleSubmit} className="flex h-full w-full items-center justify-center z-30 flex-col px-8 md:px-0">
+          <AuthForm
+            setUsername={setUsername}
+            setPassword={setPassword}
+            errorMessage={errorMessage}
+            loading={loading}
+            loadingText={loadingText}
+          />
+          <Link href="/login" className="cryptic-text no-underline z-10 mt-4">Login<GoArrowRight className="inline ml-1" /></Link>
+        </form>
+        <div className="cryptic-text3 mb-16 mx-12 text-center">This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.</div>
+      </div>
+    </>
   );
 }

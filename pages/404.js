@@ -11,7 +11,7 @@ const NotFound = () => {
             <Head>
                 <meta charSet='utf-8'/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>404 | DLW</title>
+                <title>404 Not Found | DLW</title>
                 <meta name="description" content="404 Page - Not Found"/>
             </Head>
             <div className="flex w-screen h-screen items-center justify-center flex-col">

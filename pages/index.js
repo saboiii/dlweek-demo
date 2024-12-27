@@ -87,10 +87,9 @@ export default function Home({ token, leaderboard }) {
       <Head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>DLW | Coming Soon</title>
+        <title>Coming Soon | DLW</title>
         <meta name="description" content="Deep Learning Week - MLDA @ NTU EEE" />
-
-        <meta property="og:title" content="DLW | Coming Soon" />
+        <meta property="og:title" content="Coming Soon | DLW" />
         <meta property="og:description" content="Deep Learning Week - MLDA @ NTU EEE" />
         <meta property="og:image" content="/public/og-image.png" />
         <meta property="og:url" content="https://deeplearningweek.netlify.app" />
