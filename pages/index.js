@@ -101,8 +101,6 @@ export default function Home({ token, leaderboard: initialLeaderboard }) {
   }, []);
   
 
-
-
   return (
     <>
       <Head>
