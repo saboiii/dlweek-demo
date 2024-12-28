@@ -5,6 +5,4 @@
     Access-Control-Allow-Origin = "https://dlweek.com"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
-    Server = ""
-    X-NF-Request-ID = ""
     X-Content-Type-Options = "nosniff"
