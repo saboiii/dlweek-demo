@@ -112,6 +112,7 @@ export default function Home({ token, initialLeaderboard  }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Coming Soon | DLW</title>
         <meta name="description" content="Deep Learning Week - MLDA @ NTU EEE" />
+        <meta property="og:site_name" content="dlweek.com" />
         <meta property="og:title" content="Coming Soon | DLW" />
         <meta property="og:description" content="Deep Learning Week - MLDA @ NTU EEE" />
         <meta property="og:image" content="https://dlweek.com/og-image.png" />
