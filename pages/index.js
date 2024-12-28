@@ -114,7 +114,7 @@ export default function Home({ token, initialLeaderboard  }) {
         <meta name="description" content="Deep Learning Week - MLDA @ NTU EEE" />
         <meta property="og:title" content="Coming Soon | DLW" />
         <meta property="og:description" content="Deep Learning Week - MLDA @ NTU EEE" />
-        <meta property="og:image" content="/public/og-image.png" />
+        <meta property="og:image" content="https://dlweek.com/og-image.png" />
         <meta property="og:url" content="https://dlweek.com" />
         <meta property="og:type" content="website" />
       </Head>
