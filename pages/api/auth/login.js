@@ -8,7 +8,7 @@ import axios from "axios";
 
 const rateLimiter = new RateLimiterMemory({
   points: 5,
-  duration: 300,
+  duration: 7200,
 });
 
 const SECRET = process.env.JWT_SECRET;

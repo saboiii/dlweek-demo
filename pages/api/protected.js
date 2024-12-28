@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../../models/User";
-import { connectToDatabase } from "../../lib/mongodb"; // Ensure this is the correct import path
+import { connectToDatabase } from "../../lib/mongodb";
 
 const SECRET = process.env.JWT_SECRET;
 

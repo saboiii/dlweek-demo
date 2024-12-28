@@ -6,7 +6,7 @@ import axios from "axios";
 
 const rateLimiter = new RateLimiterMemory({
   points: 5,
-  duration: 300,
+  duration: 7200,
 });
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
