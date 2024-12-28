@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
       await connectToDatabase();
       const leaderboard = await User.find()
-        .select("username highScore")
+        .select("username highScore -_id")
         .sort({ highScore: -1 })
         .limit(10)
         .lean()
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       );
 
       const leaderboard = await User.find()
-        .select("username highScore")
+        .select("username highScore -_id")
         .sort({ highScore: -1 })
         .limit(10)
         .lean();
