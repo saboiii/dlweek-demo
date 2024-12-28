@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 
-const AuthForm = ({ setUsername, setPassword, errorMessage, loading, loadingText }) => {
+const AuthForm = ({ setUsername, setPassword, errorMessage, loading, loadingText, disabledKey }) => {
   const router = useRouter();
   const isRegisterPage = router.pathname === "/register";
   const formLocked = isRegisterPage ? "Locked" : "Accessible";
@@ -58,7 +58,7 @@ const AuthForm = ({ setUsername, setPassword, errorMessage, loading, loadingText
         <button
           type="submit"
           className='button-style1 w-full'
-          disabled={loading}
+          disabled={disabledKey}
         >
           {formText}
         </button>

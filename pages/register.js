@@ -33,6 +33,7 @@ export default function Register() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
+  const [disabledKey, setDisabledKey] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,9 +43,8 @@ export default function Register() {
       return;
     }
 
-
-
     try {
+      setDisabledKey(true)
       setLoading(true);
       setLoadingText("Validating registration...");
 
@@ -99,6 +99,7 @@ export default function Register() {
             errorMessage={errorMessage}
             loading={loading}
             loadingText={loadingText}
+            disabledKey={disabledKey}
           />
           <Link href="/login" className="cryptic-text no-underline z-10 mt-4">Login<GoArrowRight className="inline ml-1" /></Link>
         </form>

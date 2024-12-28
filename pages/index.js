@@ -121,8 +121,8 @@ export default function Home({ token, initialLeaderboard  }) {
 
       <div className="flex flex-col p-8 w-screen h-screen">
         <div className="flex justify-between text-lg">
-          <button onClick={() => handlePlusClick(0)} disabled={isLoggedIn} className=" cursor-default">+</button>
-          <button onClick={() => handlePlusClick(1)} disabled={isLoggedIn} className=" cursor-default">+</button>
+          <button onClick={() => handlePlusClick(0)} disabled={isLoggedIn}>+</button>
+          <button onClick={() => handlePlusClick(1)} disabled={isLoggedIn}>+</button>
         </div>
         {isLoggedIn ? (
           <div className="flex justify-center w-full h-full items-center flex-col">
@@ -162,8 +162,8 @@ export default function Home({ token, initialLeaderboard  }) {
           </div>
         )}
         <div className="flex justify-between">
-          <button onClick={() => handlePlusClick(2)} disabled={isLoggedIn} className=" cursor-default">+</button>
-          <button onClick={() => handlePlusClick(3)} disabled={isLoggedIn} className=" cursor-default">+</button>
+          <button onClick={() => handlePlusClick(2)} disabled={isLoggedIn}>+</button>
+          <button onClick={() => handlePlusClick(3)} disabled={isLoggedIn}>+</button>
         </div>
       </div>
     </>

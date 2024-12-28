@@ -39,6 +39,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
+  const [disabledKey, setDisabledKey] = useState(false);
 
   useEffect(() => {
     const token = document.cookie
@@ -60,6 +61,7 @@ export default function Login() {
     }
 
     try {
+      setDisabledKey(true)
       setLoading(true);
       setLoadingText("Creating secure token...");
 
@@ -93,7 +95,6 @@ export default function Login() {
         setErrorMessage(response.data.message || "Something went wrong during login. Contact the website admin.");
       }
     } catch (error) {
-      // console.error("Unexpected error:", error);
       setErrorMessage("An unexpected error occurred. Please try again later or contact the website admin.");
     } finally {
       setLoading(false);
@@ -118,6 +119,7 @@ export default function Login() {
             errorMessage={errorMessage}
             loading={loading}
             loadingText={loadingText}
+            disabledKey={disabledKey}
           />
         </form>
         <CaptchaPolicy/>
