@@ -228,6 +228,15 @@ export default class GameScene extends Phaser.Scene {
         const startX = this.evilFunction(this.player.x, this.player.y, threshold, 0);
         const startY = this.evilFunction(this.player.x, this.player.y, threshold, 1);
 
+        let distanceToPlayer = Math.sqrt(
+            (startX - this.player.x) ** 2 + (startY - this.player.y) ** 2
+        );
+
+        if (distanceToPlayer < 40) {
+            startX = Math.random() * (this.windowWidth - 100) + 50;
+            startY = Math.random() * (this.windowHeight - 100) + 50;
+        }
+
         let projectile = this.add.circle(startX, startY, 8, 0xC70039);
         this.physics.add.existing(projectile);
         projectile.body.setCollideWorldBounds(true);
