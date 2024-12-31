@@ -1,6 +1,5 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import Data from "@/models/Data";
-import mongoose from "mongoose";
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
@@ -11,13 +10,19 @@ export default async function handler(req, res) {
         }
 
         try {
-            await dbConnect();
+            await connectToDatabase();
 
-            const data = playerData.map(([proj, player, minDist]) => ({
+            const data = Object.values(playerData).map((entry) => ({
                 userId,
-                projectileCoordinates: { x: proj[0], y: proj[1] },
-                playerCoordinates: { x: player[0], y: player[1] },
-                minDistance: minDist,
+                projectileCoordinates: {
+                    x: parseFloat(entry.projectileCoords.x),
+                    y: parseFloat(entry.projectileCoords.y),
+                },
+                playerCoordinates: {
+                    x: parseFloat(entry.playerCoords.x),
+                    y: parseFloat(entry.playerCoords.y),
+                },
+                minDistance: entry.minDistance,
             }));
 
             await Data.insertMany(data);

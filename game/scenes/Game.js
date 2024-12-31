@@ -82,12 +82,8 @@ export default class GameScene extends Phaser.Scene {
             const diffx = this.player.x - projectile.x;
             const diffy = this.player.y - projectile.y;
             const distance = Math.sqrt(diffx * diffx + diffy * diffy);
-
-            if (!this.projectileData[projectile.id]) {
-                this.projectileData[projectile.id] = [];
-            }
             
-            this.projectileData[projectile.id].push({
+            this.projectileData[projectile.id].trackingData.push({
                 playerCoords: { x: this.player.x.toFixed(2), y: this.player.y.toFixed(2) },
                 projectileCoords: { x: projectile.x.toFixed(2), y: projectile.y.toFixed(2) },
                 distance: distance
@@ -95,13 +91,17 @@ export default class GameScene extends Phaser.Scene {
         });
 
         this.projectiles.forEach((projectile) => {
-            this.storeMinDistance(projectile);
+            if(this.projectileData[projectile.id]){
+                this.storeMinDistance(projectile);
+            }
         });
     }
 
     storeMinDistance(projectile) {
         if (this.projectileData[projectile.id]) {
-            const { minDistance, minDistanceData } = this.projectileData[projectile.id].reduce((acc, data) => {
+            const { trackingData, initialPlayerCoords, initialProjectileCoords } = this.projectileData[projectile.id];
+    
+            const { minDistance, minDistanceData } = trackingData.reduce((acc, data) => {
                 if (data.distance < acc.minDistance) {
                     return { 
                         minDistance: data.distance,
@@ -110,14 +110,15 @@ export default class GameScene extends Phaser.Scene {
                 }
                 return acc;
             }, { minDistance: Infinity, minDistanceData: null });
-
+    
             this.playerData[projectile.id] = {
                 minDistance: minDistance,
-                playerCoords: minDistanceData.playerCoords,
-                projectileCoords: minDistanceData.projectileCoords
+                playerCoords: initialPlayerCoords,
+                projectileCoords: initialProjectileCoords
             };
         }
     }
+    
     
 
 
@@ -232,7 +233,11 @@ export default class GameScene extends Phaser.Scene {
         }
         this.projectileTrails.push(trail);
 
-        this.projectileData[projectile.id] = [];
+        this.projectileData[projectile.id] = {
+            initialPlayerCoords: { x: this.player.x.toFixed(2), y: this.player.y.toFixed(2) },
+            initialProjectileCoords: { x: startX.toFixed(2), y: startY.toFixed(2) },
+            trackingData: []
+        };
 
         projectile.spawnTime = this.time.now;
         projectile.lastVelocity = { x: 0, y: 0 };
@@ -343,17 +348,30 @@ export default class GameScene extends Phaser.Scene {
         });
     }
 
+    resetGameState() {
+        this.score = 0;
+        this.playerData = {};
+        this.projectileData = {};
+        this.projectileIdCounter = 1;
+        this.projectiles = [];
+        this.trailCircles.forEach(circle => circle.destroy());
+        this.trailCircles = [];
+        this.projectileTrails.forEach(trail => trail.forEach(circle => circle.destroy()));
+        this.projectileTrails = [];
+        this.nibbles.clear(true, true);
+    }
+
     gameOverProtocol() {
         this.gameOver = true;
         if (this.setGameOver) {
             this.setGameOver(this.gameOver);
         }
 
-        console.log(`Searched data:`, this.playerData);
+        if (this.playerData) {
+            this.setPlayerData(this.playerData);
+        }
 
-        this.projectileIdCounter = 1;
-        this.projectileData = {};
-        this.playerData = {};
+        this.resetGameState();
 
         this.scene.start('GameOverScene', {
             score: this.score,
