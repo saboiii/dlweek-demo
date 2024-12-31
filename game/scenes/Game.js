@@ -1,3 +1,5 @@
+import * as tf from '@tensorflow/tfjs';
+
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
@@ -5,6 +7,11 @@ export default class GameScene extends Phaser.Scene {
         this.setGameOver = null;
         this.fetchHighScore = null;
         this.isPhoneViewport = false;
+        this.setPlayerData = null;
+        this.projectileIdCounter = 1;
+        this.projectileData = {};
+        this.playerData = {};
+        this.fpsText = null;
     }
 
     setFetchHighScore(fetchHighScore) {
@@ -19,7 +26,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
     }
 
-    setupJoystick(){
+    setupJoystick() {
         this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
             x: 400,
             y: 400,
@@ -32,7 +39,15 @@ export default class GameScene extends Phaser.Scene {
         this.cursorKeys = this.joyStick.createCursorKeys();
     }
 
-    create() {
+    async loadModel() {
+        const model = await tf.loadLayersModel('/evil_tfjs/model.json');
+        console.log('Model loaded!');
+        return model;
+    }
+    
+
+    async create() {
+
         this.isPhoneViewport = this.sys.game.registry.get('isPhoneViewport');
         this.score = 0;
         this.text = this.add.text(0, 0);
@@ -40,7 +55,11 @@ export default class GameScene extends Phaser.Scene {
         this.setupJoystick()
         this.windowWidth = 500;
         this.windowHeight = 500;
-        this.scoreText = this.add.text(this.windowWidth - 100, 30, 'Score: 0', {
+        this.scoreText = this.add.text(400, 30, 'Score: 0', {
+            fontSize: '12px',
+            fill: '#ffffff',
+        });
+        this.fpsText = this.add.text(30, 30, 'FPS: 0', {
             fontSize: '12px',
             fill: '#ffffff',
         });
@@ -57,17 +76,80 @@ export default class GameScene extends Phaser.Scene {
                 this.gameOverProtocol();
             }
         });
+        this.updateCount = 0;
+        this.model = await this.loadModel();
+       // this.evilFunction(250, 250, 60);
+    }
+
+    evilFunction(player_x, player_y, threshold, xory) {
+        const userTensor = [[player_x, player_y, threshold]];
+        const inputTensor = tf.tensor2d(userTensor.map(row => row.map(value => value / 500)));
+        const prediction = this.model.predict(inputTensor);
+        const scaledPrediction = prediction.mul(500);
+        const predictionArray = scaledPrediction.arraySync();
+        tf.dispose([inputTensor, prediction, scaledPrediction]);
+        return predictionArray[0][xory];
     }
 
 
     update() {
+        const fps = Math.round(this.game.loop.actualFps);
+        this.fpsText.setText(`FPS: ${fps}`);
+
         this.handleMovement();
-        createTrail(this.player, this.trailCircles, 1, 1, 0.25)
+        createTrail(this.player, this.trailCircles, 1, 1, 0.25);
         this.updateProjectiles();
+
+        this.projectiles.map((projectile) => {
+            const diffx = this.player.x - projectile.x;
+            const diffy = this.player.y - projectile.y;
+            const distance = Math.sqrt(diffx * diffx + diffy * diffy);
+            
+            this.projectileData[projectile.id].trackingData.push({
+                playerCoords: { x: this.player.x.toFixed(2), y: this.player.y.toFixed(2) },
+                projectileCoords: { x: projectile.x.toFixed(2), y: projectile.y.toFixed(2) },
+                distance: distance
+            });
+        });
+
+        this.projectiles.forEach((projectile) => {
+            if(this.projectileData[projectile.id]){
+                this.storeMinDistance(projectile);
+            }
+        });
     }
+
+    storeMinDistance(projectile) {
+        if (this.projectileData[projectile.id]) {
+            const { trackingData, initialPlayerCoords, initialProjectileCoords } = this.projectileData[projectile.id];
+    
+            const { minDistance, minDistanceData } = trackingData.reduce((acc, data) => {
+                if (data.distance < acc.minDistance) {
+                    return { 
+                        minDistance: data.distance,
+                        minDistanceData: data
+                    };
+                }
+                return acc;
+            }, { minDistance: Infinity, minDistanceData: null });
+    
+            this.playerData[projectile.id] = {
+                minDistance: minDistance,
+                playerCoords: initialPlayerCoords,
+                projectileCoords: initialProjectileCoords
+            };
+        }
+    }
+    
+    
+
 
     setScoreFunction(setScoreFunction) {
         this.setScore = setScoreFunction;
+    }
+
+    setPlayerDataFunction(setPlayerDataFunction) {
+        this.setPlayerData = setPlayerDataFunction;
     }
 
     setGameOverFunction(setGameOverFunction) {
@@ -142,22 +224,18 @@ export default class GameScene extends Phaser.Scene {
 
 
     createProjectile() {
-        let startX, startY;
-        let distanceToPlayer = 0;
-
-        while (distanceToPlayer < 50) {
-            startX = Math.random() * (this.windowWidth - 100) + 50;
-            startY = Math.random() * (this.windowHeight - 100) + 50;
-            distanceToPlayer = Math.sqrt(
-                (startX - this.player.x) ** 2 + (startY - this.player.y) ** 2
-            );
-        }
+        const threshold = 60;
+        const startX = this.evilFunction(this.player.x, this.player.y, threshold, 0);
+        const startY = this.evilFunction(this.player.x, this.player.y, threshold, 1);
 
         let projectile = this.add.circle(startX, startY, 8, 0xC70039);
         this.physics.add.existing(projectile);
         projectile.body.setCollideWorldBounds(true);
         projectile.body.setVelocity(0, 0);
         this.projectiles.push(projectile);
+
+        projectile.id = this.projectileIdCounter;
+        this.projectileIdCounter++;
 
         this.growAnimation(projectile)
 
@@ -170,12 +248,19 @@ export default class GameScene extends Phaser.Scene {
         }
         this.projectileTrails.push(trail);
 
+        this.projectileData[projectile.id] = {
+            initialPlayerCoords: { x: this.player.x, y: this.player.y },
+            initialProjectileCoords: { x: startX, y: startY },
+            trackingData: []
+        };
+
         projectile.spawnTime = this.time.now;
         projectile.lastVelocity = { x: 0, y: 0 };
         projectile.body.onWorldBounds = true;
         projectile.body.world.on('worldbounds', (body) => {
             if (body.gameObject === projectile) {
                 this.deferredCleanupProjectile(projectile);
+                this.storeMinDistance(projectile);
             }
         });
     }
@@ -216,7 +301,7 @@ export default class GameScene extends Phaser.Scene {
     handleMovement() {
         const acceleration = 25;
         const maxSpeed = 200;
-        if (this.player && this.player.body){
+        if (this.player && this.player.body) {
             const currentVelocity = this.player.body.velocity.clone();
             if (this.WASD.W.isDown || this.cursorKeys["up"].isDown) {
                 this.player.body.velocity.y = Math.max(currentVelocity.y - acceleration, -maxSpeed);
@@ -225,7 +310,7 @@ export default class GameScene extends Phaser.Scene {
             } else {
                 this.smoothStop(currentVelocity, 'y', acceleration);
             }
-    
+
             if (this.WASD.A.isDown || this.cursorKeys["left"].isDown) {
                 this.player.body.velocity.x = Math.max(currentVelocity.x - acceleration, -maxSpeed);
             } else if (this.WASD.D.isDown || this.cursorKeys["right"].isDown) {
@@ -247,8 +332,8 @@ export default class GameScene extends Phaser.Scene {
 
 
     updateProjectiles() {
-        const projectileAcceleration = 10;
-        const projectileMaxSpeed = 150;
+        const projectileAcceleration = 15;
+        const projectileMaxSpeed = 175;
         const currentTime = this.time.now;
 
         this.projectiles.forEach((projectile, index) => {
@@ -266,14 +351,29 @@ export default class GameScene extends Phaser.Scene {
                     this.projectileTrails[index].forEach((circle) => {
                         circle.setAlpha(1);
                         circle.setVisible(false);
+                        circle.destroy();
                     });
 
                     this.projectileTrails.splice(index, 1);
                     this.projectiles.splice(index, 1);
+                    this.physics.world.remove(projectile.body);
                     projectile.destroy();
                 }
             },
         });
+    }
+
+    resetGameState() {
+        this.score = 0;
+        this.playerData = {};
+        this.projectileData = {};
+        this.projectileIdCounter = 1;
+        this.projectiles = [];
+        this.trailCircles.forEach(circle => circle.destroy());
+        this.trailCircles = [];
+        this.projectileTrails.forEach(trail => trail.forEach(circle => circle.destroy()));
+        this.projectileTrails = [];
+        this.nibbles.clear(true, true);
     }
 
     gameOverProtocol() {
@@ -281,6 +381,12 @@ export default class GameScene extends Phaser.Scene {
         if (this.setGameOver) {
             this.setGameOver(this.gameOver);
         }
+
+        if (this.playerData) {
+            this.setPlayerData(this.playerData);
+        }
+
+        this.resetGameState();
 
         this.scene.start('GameOverScene', {
             score: this.score,
@@ -354,7 +460,7 @@ function updateProjectile(projectile, target, acceleration, maxSpeed, currentTim
             y: projectile.body.velocity.y,
         };
 
-    } else if (timeElapsed < 10000) {
+    } else{
         projectile.body.velocity.x = projectile.lastVelocity.x;
         projectile.body.velocity.y = projectile.lastVelocity.y;
     }

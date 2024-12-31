@@ -11,6 +11,7 @@ import Head from "next/head";
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
   const token = cookies.token;
+  
   let initialLeaderboard  = [];
 
   try {
@@ -86,8 +87,8 @@ export default function Home({ token, initialLeaderboard  }) {
   };
 
   useEffect(() => {
-    
     const fetchLeaderboard = async () => {
+      if (!isLoggedIn) return;
       try {
         const response = await axios.get("/api/leaderboard", {
           headers: {
