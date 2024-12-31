@@ -1,3 +1,5 @@
+import * as tf from '@tensorflow/tfjs';
+
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
@@ -37,7 +39,15 @@ export default class GameScene extends Phaser.Scene {
         this.cursorKeys = this.joyStick.createCursorKeys();
     }
 
-    create() {
+    async loadModel() {
+        const model = await tf.loadLayersModel('/evil_tfjs/model.json');
+        console.log('Model loaded!');
+        return model;
+    }
+    
+
+    async create() {
+
         this.isPhoneViewport = this.sys.game.registry.get('isPhoneViewport');
         this.score = 0;
         this.text = this.add.text(0, 0);
@@ -67,6 +77,18 @@ export default class GameScene extends Phaser.Scene {
             }
         });
         this.updateCount = 0;
+        this.model = await this.loadModel();
+       // this.evilFunction(250, 250, 60);
+    }
+
+    evilFunction(player_x, player_y, threshold, xory) {
+        const userTensor = [[player_x, player_y, threshold]];
+        const inputTensor = tf.tensor2d(userTensor.map(row => row.map(value => value / 500)));
+        const prediction = this.model.predict(inputTensor);
+        const scaledPrediction = prediction.mul(500);
+        const predictionArray = scaledPrediction.arraySync();
+        tf.dispose([inputTensor, prediction, scaledPrediction]);
+        return predictionArray[0][xory];
     }
 
 
@@ -202,16 +224,9 @@ export default class GameScene extends Phaser.Scene {
 
 
     createProjectile() {
-        let startX, startY;
-        let distanceToPlayer = 0;
-
-        while (distanceToPlayer < 50) {
-            startX = Math.random() * (this.windowWidth - 100) + 50;
-            startY = Math.random() * (this.windowHeight - 100) + 50;
-            distanceToPlayer = Math.sqrt(
-                (startX - this.player.x) ** 2 + (startY - this.player.y) ** 2
-            );
-        }
+        const threshold = 60;
+        const startX = this.evilFunction(this.player.x, this.player.y, threshold, 0);
+        const startY = this.evilFunction(this.player.x, this.player.y, threshold, 1);
 
         let projectile = this.add.circle(startX, startY, 8, 0xC70039);
         this.physics.add.existing(projectile);
@@ -234,8 +249,8 @@ export default class GameScene extends Phaser.Scene {
         this.projectileTrails.push(trail);
 
         this.projectileData[projectile.id] = {
-            initialPlayerCoords: { x: this.player.x.toFixed(2), y: this.player.y.toFixed(2) },
-            initialProjectileCoords: { x: startX.toFixed(2), y: startY.toFixed(2) },
+            initialPlayerCoords: { x: this.player.x, y: this.player.y },
+            initialProjectileCoords: { x: startX, y: startY },
             trackingData: []
         };
 
@@ -317,8 +332,8 @@ export default class GameScene extends Phaser.Scene {
 
 
     updateProjectiles() {
-        const projectileAcceleration = 10;
-        const projectileMaxSpeed = 150;
+        const projectileAcceleration = 15;
+        const projectileMaxSpeed = 175;
         const currentTime = this.time.now;
 
         this.projectiles.forEach((projectile, index) => {
