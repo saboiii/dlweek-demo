@@ -93,9 +93,11 @@ export default function Login() {
         router.push("/game");
       } else {
         setErrorMessage(response.data.message || "Something went wrong during login. Contact the website admin.");
+        setDisabledKey(false)
       }
     } catch (error) {
       setErrorMessage("An unexpected error occurred. Please try again later or contact the website admin.");
+      setDisabledKey(false)
     } finally {
       setLoading(false);
       setLoadingText("");

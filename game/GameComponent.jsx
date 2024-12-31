@@ -9,8 +9,21 @@ import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-p
 
 const GameComponent = ({ pause, user }) => {
     const [score, setScore] = useState(0);
+    const [playerData, setPlayerData] = useState([])
     const [gameOver, setGameOver] = useState(false);
     const gameRef = useRef(null);
+
+    const savePlayerData = async () => {
+        try {
+            if (gameOver && playerData) {
+                await axios.post('/api/playerdata', {
+                    playerData, userId: user._id
+                });
+            }
+        } catch (error) {
+            console.error("Error saving player data:", error);
+        }
+    };    
 
     const saveHighScore = async () => {
         try {
@@ -85,6 +98,7 @@ const GameComponent = ({ pause, user }) => {
                         const mainMenuScene = game.scene.getScene('MainMenuScene');
                         const gameScene = game.scene.getScene('GameScene');
 
+                        gameScene.setPlayerDataFunction(setPlayerData);
                         gameScene.setScoreFunction(setScore);
                         gameScene.setGameOverFunction(setGameOver);
                         gameScene.setFetchHighScore(fetchHighScore);

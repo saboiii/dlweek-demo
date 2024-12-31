@@ -11,10 +11,15 @@ import Head from "next/head";
 export async function getServerSideProps(context) {
   const cookies = parseCookies(context);
   const token = cookies.token;
+  
   let initialLeaderboard  = [];
 
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`,{
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    });
     initialLeaderboard  = response.data;
   } catch (error) {
     console.error("error fetching leaderboard:", error);
@@ -82,8 +87,8 @@ export default function Home({ token, initialLeaderboard  }) {
   };
 
   useEffect(() => {
-    
     const fetchLeaderboard = async () => {
+      if (!isLoggedIn) return;
       try {
         const response = await axios.get("/api/leaderboard", {
           headers: {
