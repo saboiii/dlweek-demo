@@ -14,7 +14,11 @@ export async function getServerSideProps(context) {
   let initialLeaderboard  = [];
 
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`,{
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    });
     initialLeaderboard  = response.data;
   } catch (error) {
     console.error("error fetching leaderboard:", error);
