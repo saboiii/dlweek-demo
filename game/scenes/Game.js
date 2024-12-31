@@ -81,8 +81,8 @@ export default class GameScene extends Phaser.Scene {
        // this.evilFunction(250, 250, 60);
     }
 
-    evilFunction(player_x, player_y, threshold, xory) {
-        const userTensor = [[player_x, player_y, threshold]];
+    evilFunction(x, y, threshold, xory) {
+        const userTensor = [[x, y, threshold]];
         const inputTensor = tf.tensor2d(userTensor.map(row => row.map(value => value / 500)));
         const prediction = this.model.predict(inputTensor);
         const scaledPrediction = prediction.mul(500);
@@ -225,8 +225,8 @@ export default class GameScene extends Phaser.Scene {
 
     createProjectile() {
         const threshold = 60;
-        const startX = this.evilFunction(this.player.x, this.player.y, threshold, 0);
-        const startY = this.evilFunction(this.player.x, this.player.y, threshold, 1);
+        let startX = this.evilFunction(this.player.x, this.player.y, threshold, 0);
+        let startY = this.evilFunction(this.player.x, this.player.y, threshold, 1);
 
         let distanceToPlayer = Math.sqrt(
             (startX - this.player.x) ** 2 + (startY - this.player.y) ** 2
@@ -373,7 +373,6 @@ export default class GameScene extends Phaser.Scene {
     }
 
     resetGameState() {
-        this.score = 0;
         this.playerData = {};
         this.projectileData = {};
         this.projectileIdCounter = 1;
