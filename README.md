@@ -9,9 +9,4 @@ Feel free to look around.<br />
 <br />
 © 2025 Saba Azad, Machine Learning & Data Analytics Lab @ NTU EEE. All rights reserved.
 
-<br />
-<div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="https://github.com/saboiii/dlweek-demo/tree/main/public/og-image.png" alt="Promo Image" width="80" height="80">
-  </a>
-</div>
+![Promo Image]([https://github.com/[username]/[reponame]/blob/[branch]/image.jpg](https://github.com/saboiii/dlweek-demo/tree/main/public/og-image.png)?raw=true)
