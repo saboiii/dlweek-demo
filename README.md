@@ -12,6 +12,6 @@ Feel free to look around.<br />
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/og-image.png" alt="Promo Image" width="80" height="80">
+    <img src="https://github.com/saboiii/dlweek-demo/tree/main/public/og-image.png" alt="Promo Image" width="80" height="80">
   </a>
 </div>
