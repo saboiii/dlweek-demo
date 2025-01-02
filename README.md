@@ -1,4 +1,3 @@
-![Promo Image](https://github.com/saboiii/dlweek-demo/blob/main/public/og-image.png) <br/>
 <video src='https://github.com/user-attachments/assets/0e479848-3f8f-4d58-b330-52d0b7a82e82' width=180/>
 # Deep Learning Week '25 is coming soon! 🚀<br>
 <br/>
