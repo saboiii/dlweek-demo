@@ -1,4 +1,5 @@
-<video src='https://github.com/user-attachments/assets/0e479848-3f8f-4d58-b330-52d0b7a82e82' width=180/>
+<video src='https://github.com/user-attachments/assets/0e479848-3f8f-4d58-b330-52d0b7a82e82' width=180/> <br>
+
 # Deep Learning Week '25 is coming soon! 🚀<br>
 <br/>
 This is a secure demo website for our upcoming Deep Learning Week event with a hidden easter egg. Built using NextJS and TailwindCSS for the frontend, and Node.js and Axios for the backend. To optimize media delivery and data storage, I've used AWS S3 and Lambda with Cloudwatch.<br />
