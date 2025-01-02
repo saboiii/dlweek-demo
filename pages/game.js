@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import axios from "../lib/axios";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from "next/head";
 import { CiLogout } from "react-icons/ci";
 
@@ -115,7 +115,7 @@ export default function Game({ initialUser }) {
       <div className="flex w-screen h-screen items-center justify-center">
         <div className="hidden md:flex w-full flex-row sm:flex-col transform items-center justify-center gap-8">
           <div className="flex cryptic-text">
-            Welcome, <span className="cryptic-text2 inline-block">&nbsp;{user?.username}</span>. It won't be this easy in the future, you're just a lucky early user.
+            Welcome, <span className="cryptic-text2 inline-block">&nbsp;{user?.username}</span>. There's an AI embedded in the game that will try its best to kill you.
           </div>
           <GameComponent className="flex" pause={pause} user={user} />
           {pause && (

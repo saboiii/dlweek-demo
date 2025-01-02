@@ -59,7 +59,7 @@ const GameComponent = ({ pause, user }) => {
 
     useEffect(() => {
         if (gameOver) {
-            console.log(playerData);
+            //console.log(playerData);
             savePlayerData();
             saveHighScore();
         }

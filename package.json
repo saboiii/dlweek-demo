@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tensorflow/tfjs-node": "npm:4.22.0",
+    "@tensorflow/tfjs-node": "4.22.0",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
-    "core-js": "npm:3.29.1",
+    "core-js": "3.29.1",
     "graphology-types": "0.24.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
