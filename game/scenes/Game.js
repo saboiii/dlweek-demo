@@ -38,10 +38,11 @@ export default class GameScene extends Phaser.Scene {
         this.joyStick.enable = this.isPhoneViewport;
         this.cursorKeys = this.joyStick.createCursorKeys();
     }
+    
 
     async loadModel() {
         const model = await tf.loadLayersModel('/evil_tfjs/model.json');
-        console.log('Model loaded!');
+        console.log('The AI has joined the game.');
         return model;
     }
     
