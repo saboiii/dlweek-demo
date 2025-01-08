@@ -45,6 +45,10 @@ const nextConfig = {
             key: "X-Frame-Options",
             value: "DENY",
           },
+          {
+            key: "Access-Control-Allow-Credentials",
+            value: "true",
+          },
         ],
       },
     ];

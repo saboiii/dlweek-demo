@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
-import User from "../../models/User";
-import { connectToDatabase } from "../../lib/mongodb";
+import User from "@/models/User";
+import { connectToDatabase } from "@/lib/mongodb";
 
 const SECRET = process.env.JWT_SECRET;
 
 export default async function handler(req, res) {
+  const { id: userId } = req.query;
+  
   if (req.method === "GET") {
     const token = req.cookies.token;
 

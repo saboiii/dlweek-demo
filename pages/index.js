@@ -141,8 +141,8 @@ export default function Home({ token, initialLeaderboard  }) {
             <div className="hidden md:flex flex-col w-full h-full py-20 px-32">
               <h1>LEADERBOARD</h1>
               <div className="grid grid-cols-1 overflow-scroll gap-2 grid-rows-10 w-full h-full border rounded-md px-4 mb-4">
-                {leaderboard.map((user) => (
-                  <div key={user._id} className="flex justify-between border-b items-center px-4">
+                {leaderboard.map((user, index) => (
+                  <div key={index} className="flex justify-between border-b items-center px-4">
                     <div>{user.username}</div>
                     <div>{user.highScore}</div>
                   </div>
