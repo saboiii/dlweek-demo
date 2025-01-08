@@ -13,9 +13,10 @@ const GameComponent = dynamic(() =>
 );
 
 export async function getServerSideProps(context) {
-  const { req } = context;
+  const { req, res } = context;
   const token = req.cookies.token;
-
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  
   if (!token) {
     return {
       redirect: {

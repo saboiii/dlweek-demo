@@ -47,7 +47,6 @@ export default class GameScene extends Phaser.Scene {
     
 
     async create() {
-
         this.isPhoneViewport = this.sys.game.registry.get('isPhoneViewport');
         this.score = 0;
         this.text = this.add.text(0, 0);
