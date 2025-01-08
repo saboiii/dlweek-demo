@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        initialUser: response.data.user,
+        user: response.data.user,
       },
     };
   } catch (error) {
@@ -48,30 +48,9 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Game({ initialUser }) {
+export default function Game({ user }) {
   const router = useRouter();
-  const [user, setUser] = useState(initialUser);
-  const [loading, setLoading] = useState(false);
   const [pause, setPause] = useState(false);
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      if (!user) {
-        setLoading(true);
-        try {
-          const response = await axios.get("/api/protected");
-          setUser(response.data.user);
-        } catch (error) {
-          console.error("Auth error:", error.response || error);
-          router.push("/");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    checkAuthStatus();
-  }, [user, router]);
 
   const handleLogout = async () => {
     try {
@@ -101,8 +80,6 @@ export default function Game({ initialUser }) {
   const handlePause = () => {
     setPause(prevPause => !prevPause);
   };
-
-  if (loading) return <p>Loading...</p>;
 
   return (
     <>
