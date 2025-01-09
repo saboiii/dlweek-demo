@@ -109,6 +109,9 @@ export const authOptions = {
       session.user.highScore = token.highScore;
       return session;
     },
+    async signOut({ token }) {
+      return true;
+    },
   },
 };
 

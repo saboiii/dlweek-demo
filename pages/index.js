@@ -7,27 +7,37 @@ import Link from "next/link";
 import { CiLogout } from "react-icons/ci";
 import { GoArrowRight } from "react-icons/go";
 import Head from "next/head";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, getSession } from "next-auth/react";
 
-export default function Home() {
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      initialSession: session || null,
+    },
+  };
+}
+
+
+export default function Home({ initialSession }) {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
   const router = useRouter();
   const { data: session, status } = useSession();
   const [leaderboard, setLeaderboard] = useState([]);
   const [clicks, setClicks] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(initialSession ? true : false);
 
   useEffect(() => {
-    if (status === "authenticated") {
-      setIsLoggedIn(true);
-    } else if (status === "unauthenticated") {
-      setIsLoggedIn(false);
-    }
+    const checkSession = async () => {
+      const session = await getSession();
+      setIsLoggedIn(session ? true : false);
+    };
+    checkSession();
   }, [status]);
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
-    router.push('/');
+    await signOut();
   };
 
   const handlePlusClick = async (index) => {

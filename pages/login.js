@@ -33,7 +33,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Login() {
-  const { data: session } = useSession();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

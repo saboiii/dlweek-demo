@@ -59,8 +59,7 @@ export default function Game() {
   };
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
-    router.push('/');
+    await signOut();
   };
 
   return (
