@@ -8,7 +8,6 @@ import { CiLogout } from "react-icons/ci";
 import { GoArrowRight } from "react-icons/go";
 import Head from "next/head";
 import { useSession, signOut } from "next-auth/react";
-import { getSession } from "next-auth/react";
 
 export default function Home() {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
@@ -16,7 +15,15 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [leaderboard, setLeaderboard] = useState([]);
   const [clicks, setClicks] = useState([]);
-  const isLoggedIn = status === "authenticated";
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsLoggedIn(true);
+    } else if (status === "unauthenticated") {
+      setIsLoggedIn(false);
+    }
+  }, [status]);
 
   const handleLogout = async () => {
     await signOut({ redirect: false });

@@ -1,5 +1,6 @@
 import { useSession, signOut, getSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import Head from "next/head";
@@ -28,6 +29,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Game() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [pause, setPause] = useState(false);
 
@@ -57,6 +59,7 @@ export default function Game() {
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/" });
+    router.push("/");
   };
 
   return (
