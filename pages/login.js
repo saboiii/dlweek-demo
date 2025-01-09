@@ -42,12 +42,6 @@ export default function Login() {
   const [loadingText, setLoadingText] = useState("");
   const [disabledKey, setDisabledKey] = useState(false);
 
-  useEffect(() => {
-    if (session) {
-      router.push("/game");
-    }
-  }, [session, router]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
