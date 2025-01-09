@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    router.reload();
+    router.push('/');
   };
 
   const handlePlusClick = async (index) => {
@@ -83,7 +83,7 @@ export default function Home() {
   }, [isLoggedIn]);
 
   if (status === "loading") {
-    return <div className="flex flex-col w-screen h-screen"/>;
+    return <div className="flex flex-col w-screen h-screen cryptic text"/>;
   }
   
 

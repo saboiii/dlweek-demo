@@ -32,6 +32,7 @@ export default function Game() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [pause, setPause] = useState(false);
+  
 
   useEffect(() => {
     const handleKeydown = (event) => {
@@ -50,7 +51,7 @@ export default function Game() {
   }, []);
 
   if (status === "loading") {
-    return <div className="flex w-screen h-screen items-center justify-center cryptic-text text-xs"> Loading...</div>;
+    return <div className="flex w-screen h-screen items-center justify-center cryptic-text text-xs"/>;
   }
 
   const handlePause = () => {
