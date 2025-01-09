@@ -46,6 +46,7 @@ export const authOptions = {
             throw new Error("CAPTCHA verification failed.");
           }
         } catch (error) {
+          console.log(error);
           throw new Error("Error verifying CAPTCHA");
         }
       
