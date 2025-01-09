@@ -7,26 +7,15 @@ import Link from "next/link";
 import { CiLogout } from "react-icons/ci";
 import { GoArrowRight } from "react-icons/go";
 import Head from "next/head";
-import { useSession, signOut, getSession } from "next-auth/react";
+import { useSession, getSession, signOut } from "next-auth/react";
 
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-
-  return {
-    props: {
-      initialSession: session || null,
-    },
-  };
-}
-
-
-export default function Home({ initialSession }) {
+export default function Home() {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
   const router = useRouter();
   const { data: session, status } = useSession();
   const [leaderboard, setLeaderboard] = useState([]);
   const [clicks, setClicks] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(initialSession ? true : false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -37,7 +26,8 @@ export default function Home({ initialSession }) {
   }, [status]);
 
   const handleLogout = async () => {
-    await signOut();
+    await signOut({ redirect: false });
+    router.push('/');
   };
 
   const handlePlusClick = async (index) => {
