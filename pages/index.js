@@ -83,7 +83,7 @@ export default function Home() {
   }, [isLoggedIn]);
 
   if (status === "loading") {
-    return <div className="flex flex-col p-8 w-screen h-screen"/>;
+    return <div className="flex flex-col w-screen h-screen"/>;
   }
   
 
