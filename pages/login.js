@@ -2,12 +2,23 @@ import { signIn, useSession } from "next-auth/react";
 import AuthForm from "@/components/AuthForm";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { parseCookies } from "nookies";
 import Head from "next/head";
 import CaptchaPolicy from "@/components/CaptchaPolicy";
 import { getSession } from "next-auth/react";
 
 export async function getServerSideProps(context) {
+  const cookies = parseCookies(context);
   const session = await getSession({ req: context.req });
+  
+  if (!cookies.unlockRegister) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
   if (session) {
     return {

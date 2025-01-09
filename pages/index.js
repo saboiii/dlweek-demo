@@ -18,7 +18,6 @@ export default function Home() {
   const [clicks, setClicks] = useState([]);
   const isLoggedIn = status === "authenticated";
 
-
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("/");

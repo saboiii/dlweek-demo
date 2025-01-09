@@ -48,7 +48,7 @@ export default function Game() {
   }, []);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <div className="flex w-screen h-screen items-center justify-center cryptic-text2"> Loading...</div>;
   }
 
   const handlePause = () => {

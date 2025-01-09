@@ -18,16 +18,17 @@ export default NextAuth({
     Credentials({
       async authorize(credentials) {
         const ip = credentials.ip || "unknown-ip";
-        
+      
         try {
           await rateLimiter.consume(ip);
         } catch (error) {
           console.log("Rate limit exceeded for IP:", ip);
           throw new Error("Too many requests. Try again later.");
         }
-
+      
         const { username, password, captchaToken, isNewUser } = credentials;
-
+        const isNewUserBool = isNewUser === 'true';
+      
         try {
           const captchaResponse = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,
@@ -39,50 +40,52 @@ export default NextAuth({
               },
             }
           );
-
+      
           if (!captchaResponse.data.success || captchaResponse.data.score < 0.5) {
             throw new Error("CAPTCHA verification failed.");
           }
         } catch (error) {
           throw new Error("Error verifying CAPTCHA");
         }
-
+      
         const db = await connectToDatabase();
-
-        if (isNewUser) {
+      
+        if (isNewUserBool) {
           const existingUser = await User.findOne({ username });
+
           if (existingUser) {
             throw new Error("User already exists");
           }
-
+      
           const hashedPassword = await bcrypt.hash(password, 12);
-
+      
           const newUser = new User({
             username,
             password: hashedPassword,
             highScore: 0,
           });
-
+      
           await newUser.save();
-
+      
           return {
             id: newUser._id.toString(),
             username: newUser.username,
             highScore: newUser.highScore,
           };
-        }
-
-        const user = await User.findOne({ username });
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-          throw new Error("Invalid username or password");
-        }
-
-        return {
-          id: user._id.toString(),
-          username: user.username,
-          highScore: user.highScore,
+        } else {
+          const user = await User.findOne({ username });
+          if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new Error("Invalid username or password");
+          }
+      
+          return {
+            id: user._id.toString(),
+            username: user.username,
+            highScore: user.highScore,
+          };
         };
-      },
+      }
+      
     }),
   ],
   session: {
