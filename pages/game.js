@@ -57,8 +57,9 @@ export default function Game() {
     setPause(prevPause => !prevPause);
   };
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/" });
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
   };
 
   return (
