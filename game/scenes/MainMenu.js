@@ -19,7 +19,7 @@ class MainMenu extends Phaser.Scene {
             "newUser = MainModel(input_shape=(500, 10))",
             "print('Welcome to our secret minigame')",
             "print('Press ENTER to play')",
-            "print('Use WASD keys to move')"
+            "print('Use WASD or arrow keys to move')"
         ];
 
         

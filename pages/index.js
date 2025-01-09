@@ -1,60 +1,33 @@
 import Background from "@/components/Background";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { parseCookies, setCookie } from "nookies";
+import { setCookie } from "nookies";
 import axios from "axios";
 import Link from "next/link";
 import { CiLogout } from "react-icons/ci";
 import { GoArrowRight } from "react-icons/go";
 import Head from "next/head";
+import { useSession, getSession, signOut } from "next-auth/react";
 
-export async function getServerSideProps(context) {
-  const cookies = parseCookies(context);
-  const token = cookies.token;
-  
-  let initialLeaderboard  = [];
-
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`,{
-      headers: {
-        Cookie: `token=${token}`,
-      },
-    });
-    initialLeaderboard  = response.data;
-  } catch (error) {
-    console.error("error fetching leaderboard:", error);
-  }
-
-  return {
-    props: {
-      token: token || null,
-      initialLeaderboard ,
-    },
-  };
-}
-
-export default function Home({ token, initialLeaderboard  }) {
+export default function Home() {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-  const [leaderboard, setLeaderboard] = useState(initialLeaderboard);
+  const { data: session, status } = useSession();
+  const [leaderboard, setLeaderboard] = useState([]);
   const [clicks, setClicks] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, [token]);
-
+    const checkSession = async () => {
+      const session = await getSession();
+      setIsLoggedIn(session ? true : false);
+    };
+    checkSession();
+  }, [status]);
 
   const handleLogout = async () => {
-    try {
-      await axios.post("/api/auth/logout");
-      router.push("/");
-      setIsLoggedIn(false)
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    await signOut({ redirect: false });
+    router.push('/');
   };
 
   const handlePlusClick = async (index) => {
@@ -88,7 +61,7 @@ export default function Home({ token, initialLeaderboard  }) {
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
-      if (!isLoggedIn) return;
+      if (!isLoggedIn || !session) return;
       try {
         const response = await axios.get("/api/leaderboard", {
           headers: {
@@ -102,12 +75,16 @@ export default function Home({ token, initialLeaderboard  }) {
         console.error("Error fetching leaderboard:", error);
       }
     };
-  
+
     fetchLeaderboard();
     const interval = setInterval(fetchLeaderboard, 5000);
-  
+
     return () => clearInterval(interval);
-  }, []);
+  }, [isLoggedIn]);
+
+  if (status === "loading") {
+    return <div className="flex flex-col w-screen h-screen cryptic text"/>;
+  }
   
 
   return (
@@ -141,8 +118,8 @@ export default function Home({ token, initialLeaderboard  }) {
             <div className="hidden md:flex flex-col w-full h-full py-20 px-32">
               <h1>LEADERBOARD</h1>
               <div className="grid grid-cols-1 overflow-scroll gap-2 grid-rows-10 w-full h-full border rounded-md px-4 mb-4">
-                {leaderboard.map((user) => (
-                  <div key={user._id} className="flex justify-between border-b items-center px-4">
+                {leaderboard.map((user, index) => (
+                  <div key={index} className="flex justify-between border-b items-center px-4">
                     <div>{user.username}</div>
                     <div>{user.highScore}</div>
                   </div>

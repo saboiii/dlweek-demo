@@ -45,7 +45,7 @@ const AuthForm = ({ setUsername, setPassword, errorMessage, loading, loadingText
           className="absolute inset-y-0 right-2 flex items-center text-white"
           disabled={loading}
         >
-          {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          {showPassword ? <FaRegEye /> : <FaRegEyeSlash /> }
         </button>
       </div>
       <div className='text-xs text-red-400/80 text-center uppercase'>{errorMessage}</div>

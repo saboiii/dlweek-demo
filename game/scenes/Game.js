@@ -38,16 +38,16 @@ export default class GameScene extends Phaser.Scene {
         this.joyStick.enable = this.isPhoneViewport;
         this.cursorKeys = this.joyStick.createCursorKeys();
     }
+    
 
     async loadModel() {
         const model = await tf.loadLayersModel('/evil_tfjs/model.json');
-        console.log('Model loaded!');
+        console.log('The AI has joined the game.');
         return model;
     }
     
 
     async create() {
-
         this.isPhoneViewport = this.sys.game.registry.get('isPhoneViewport');
         this.score = 0;
         this.text = this.add.text(0, 0);
@@ -164,6 +164,7 @@ export default class GameScene extends Phaser.Scene {
     setupControls() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.cursorKeys = this.joyStick.createCursorKeys();
+
         this.WASD = this.input.keyboard.addKeys({
             W: Phaser.Input.Keyboard.KeyCodes.W,
             A: Phaser.Input.Keyboard.KeyCodes.A,
@@ -171,6 +172,7 @@ export default class GameScene extends Phaser.Scene {
             D: Phaser.Input.Keyboard.KeyCodes.D,
         });
     }
+    
 
     createPlayerTrail() {
         this.trailCircles = [];
@@ -309,17 +311,17 @@ export default class GameScene extends Phaser.Scene {
         const maxSpeed = 200;
         if (this.player && this.player.body) {
             const currentVelocity = this.player.body.velocity.clone();
-            if (this.WASD.W.isDown || this.cursorKeys["up"].isDown) {
+            if (this.WASD.W.isDown || this.cursorKeys["up"].isDown || this.cursors["up"].isDown) {
                 this.player.body.velocity.y = Math.max(currentVelocity.y - acceleration, -maxSpeed);
-            } else if (this.WASD.S.isDown || this.cursorKeys["down"].isDown) {
+            } else if (this.WASD.S.isDown || this.cursorKeys["down"].isDown || this.cursors["down"].isDown) {
                 this.player.body.velocity.y = Math.min(currentVelocity.y + acceleration, maxSpeed);
             } else {
                 this.smoothStop(currentVelocity, 'y', acceleration);
             }
 
-            if (this.WASD.A.isDown || this.cursorKeys["left"].isDown) {
+            if (this.WASD.A.isDown || this.cursorKeys["left"].isDown || this.cursors["left"].isDown) {
                 this.player.body.velocity.x = Math.max(currentVelocity.x - acceleration, -maxSpeed);
-            } else if (this.WASD.D.isDown || this.cursorKeys["right"].isDown) {
+            } else if (this.WASD.D.isDown || this.cursorKeys["right"].isDown || this.cursors["right"].isDown) {
                 this.player.body.velocity.x = Math.min(currentVelocity.x + acceleration, maxSpeed);
             } else {
                 this.smoothStop(currentVelocity, 'x', acceleration);
