@@ -13,7 +13,6 @@ const rateLimiter = new RateLimiterMemory({
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
-// Export authOptions for reuse
 export const authOptions = {
   providers: [
     Credentials({
