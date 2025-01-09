@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    router.push("/");
+    router.reload();
   };
 
   const handlePlusClick = async (index) => {
@@ -81,6 +81,10 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [isLoggedIn]);
+
+  if (status === "loading") {
+    return <div className="flex flex-col p-8 w-screen h-screen"/>;
+  }
   
 
   return (

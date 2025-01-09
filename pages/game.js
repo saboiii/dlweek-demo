@@ -59,7 +59,6 @@ export default function Game() {
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/" });
-    router.push("/");
   };
 
   return (
