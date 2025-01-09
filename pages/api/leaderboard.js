@@ -2,10 +2,10 @@ import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/models/User";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
-import { NextAuth } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from "./auth/[...nextauth]";
 
 export default async function handler(req, res) {
-  const session = await getServerSession(req, res, NextAuth);
+  const session = await getServerSession(req, res, authOptions);
   
   if (!session) {
     return res.status(401).json({ error: "Unauthorized" });

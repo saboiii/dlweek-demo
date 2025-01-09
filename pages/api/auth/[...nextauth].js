@@ -13,7 +13,8 @@ const rateLimiter = new RateLimiterMemory({
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
-export default NextAuth({
+// Export authOptions for reuse
+export const authOptions = {
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -83,9 +84,8 @@ export default NextAuth({
             username: user.username,
             highScore: user.highScore,
           };
-        };
+        }
       }
-      
     }),
   ],
   session: {
@@ -109,4 +109,7 @@ export default NextAuth({
       return session;
     },
   },
-});
+};
+
+// Default export for NextAuth
+export default NextAuth(authOptions);
