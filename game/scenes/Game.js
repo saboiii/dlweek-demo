@@ -321,7 +321,7 @@ export default class GameScene extends Phaser.Scene {
 
             if (this.WASD.A.isDown || this.cursorKeys["left"].isDown || this.cursors["left"].isDown) {
                 this.player.body.velocity.x = Math.max(currentVelocity.x - acceleration, -maxSpeed);
-            } else if (this.WASD.D.isDown || this.cursorKeys["right"].isDown || this.cursorKeys["right"].isDown) {
+            } else if (this.WASD.D.isDown || this.cursorKeys["right"].isDown || this.cursors["right"].isDown) {
                 this.player.body.velocity.x = Math.min(currentVelocity.x + acceleration, maxSpeed);
             } else {
                 this.smoothStop(currentVelocity, 'x', acceleration);

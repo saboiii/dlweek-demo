@@ -6,8 +6,10 @@ import GameScene from './scenes/Game';
 import GameOver from './scenes/GameOver';
 import axios from 'axios';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+import { useSession } from "next-auth/react";
 
-const GameComponent = ({ pause, user }) => {
+const GameComponent = ({ pause }) => {
+    const { data: session, status } = useSession();
     const [score, setScore] = useState(0);
     const [playerData, setPlayerData] = useState([])
     const [gameOver, setGameOver] = useState(false);
@@ -17,7 +19,7 @@ const GameComponent = ({ pause, user }) => {
         try {
             if (gameOver && playerData) {
                 await axios.post('/api/playerdata', {
-                    playerData, userId: user._id
+                    playerData, userId: session?.user.id
                 });
             }
         } catch (error) {
@@ -27,9 +29,9 @@ const GameComponent = ({ pause, user }) => {
 
     const saveHighScore = async () => {
         try {
-            if (gameOver && score) {
+            if (gameOver && score && session) {
                 const response = await axios.post('/api/leaderboard', {
-                    userId: user._id,
+                    userId: session.user.id,
                     highScore: score,
                 });
             }
@@ -40,8 +42,8 @@ const GameComponent = ({ pause, user }) => {
 
     const fetchHighScore = async () => {
         try {
-            if (user?._id) {
-                const response = await axios.get(`/api/user/${user._id}/highscore`, {
+            if (session?.user.id) {
+                const response = await axios.get(`/api/user/${session.user.id}/highscore`, {
                     headers: {
                         'Cache-Control': 'no-cache',
                     },
@@ -59,7 +61,6 @@ const GameComponent = ({ pause, user }) => {
 
     useEffect(() => {
         if (gameOver) {
-            //console.log(playerData);
             savePlayerData();
             saveHighScore();
         }

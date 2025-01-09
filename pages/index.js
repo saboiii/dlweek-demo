@@ -1,60 +1,27 @@
 import Background from "@/components/Background";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { parseCookies, setCookie } from "nookies";
+import { setCookie } from "nookies";
 import axios from "axios";
 import Link from "next/link";
 import { CiLogout } from "react-icons/ci";
 import { GoArrowRight } from "react-icons/go";
 import Head from "next/head";
+import { useSession, signOut } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
-export async function getServerSideProps(context) {
-  const cookies = parseCookies(context);
-  const token = cookies.token;
-  
-  let initialLeaderboard  = [];
-
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard`,{
-      headers: {
-        Cookie: `token=${token}`,
-      },
-    });
-    initialLeaderboard  = response.data;
-  } catch (error) {
-    console.error("error fetching leaderboard:", error);
-  }
-
-  return {
-    props: {
-      token: token || null,
-      initialLeaderboard ,
-    },
-  };
-}
-
-export default function Home({ token, initialLeaderboard  }) {
+export default function Home() {
   const videoUrl = "https://dlw-bucket.s3.ap-southeast-1.amazonaws.com/mainvideofin.mp4"
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-  const [leaderboard, setLeaderboard] = useState(initialLeaderboard);
+  const { data: session, status } = useSession();
+  const [leaderboard, setLeaderboard] = useState([]);
   const [clicks, setClicks] = useState([]);
-
-  useEffect(() => {
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, [token]);
+  const isLoggedIn = status === "authenticated";
 
 
   const handleLogout = async () => {
-    try {
-      await axios.post("/api/auth/logout");
-      router.push("/");
-      setIsLoggedIn(false)
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    await signOut({ redirect: false });
+    router.push("/");
   };
 
   const handlePlusClick = async (index) => {
@@ -88,7 +55,7 @@ export default function Home({ token, initialLeaderboard  }) {
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
-      if (!isLoggedIn) return;
+      if (!isLoggedIn || !session) return;
       try {
         const response = await axios.get("/api/leaderboard", {
           headers: {
@@ -102,12 +69,12 @@ export default function Home({ token, initialLeaderboard  }) {
         console.error("Error fetching leaderboard:", error);
       }
     };
-  
+
     fetchLeaderboard();
     const interval = setInterval(fetchLeaderboard, 5000);
-  
+
     return () => clearInterval(interval);
-  }, []);
+  }, [isLoggedIn]);
   
 
   return (
